@@ -824,36 +824,44 @@ bool ld2410::leave_configuration_mode_()
 
 bool ld2410::switch_bluetooth_on_off_(bool value)
 {
-	send_command_preamble_();
-	radar_uart_->write((byte) 0x04);	//Command is four bytes long
-	radar_uart_->write((byte) 0x00);
-	radar_uart_->write((byte) 0xA4);	//Request switch bluetooth
-	radar_uart_->write((byte) 0x00);
-	radar_uart_->write((byte) (value ? 0x01 : 0x00));	
-	radar_uart_->write((byte) 0x00);
-	send_command_postamble_();
-	radar_uart_last_command_ = millis();
-	while(millis() - radar_uart_last_command_ < radar_uart_command_timeout_)
+	if(enter_configuration_mode_())
 	{
-		if(read_frame_())
+		delay(50);
+		send_command_preamble_();
+		radar_uart_->write((byte) 0x04);	//Command is four bytes long
+		radar_uart_->write((byte) 0x00);
+		radar_uart_->write((byte) 0xA4);	//Request switch bluetooth
+		radar_uart_->write((byte) 0x00);
+		radar_uart_->write((byte) (value ? 0x01 : 0x00));	
+		radar_uart_->write((byte) 0x00);
+		send_command_postamble_();
+		radar_uart_last_command_ = millis();
+		while(millis() - radar_uart_last_command_ < 20 * radar_uart_command_timeout_)
 		{
-			if(latest_ack_ == 0xA4)
+			if(read_frame_())
 			{
-				return true;
+				if(latest_ack_ == 0xA4)
+				{
+					delay(50);
+					leave_configuration_mode_();
+					return true;
+				}
 			}
 		}
 	}
+	delay(50);
+	leave_configuration_mode_();
 	return false;
 }
 
 bool ld2410::disableBluetooth()
 {
-	switch_bluetooth_on_off_(false);
+	return switch_bluetooth_on_off_(false);
 }
 
 bool ld2410::enableBluetooth()
 {
-	switch_bluetooth_on_off_(true);
+	return switch_bluetooth_on_off_(true);
 }
 
 bool ld2410::requestStartEngineeringMode()

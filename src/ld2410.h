@@ -61,7 +61,7 @@ class ld2410	{
 		uint32_t radar_uart_timeout = 100;								//How long to give up on receiving some useful data from the LD2410
 		uint32_t radar_uart_last_packet_ = 0;							//Time of the last packet from the radar
 		uint32_t radar_uart_last_command_ = 0;							//Time of the last command sent to the radar
-		uint32_t radar_uart_command_timeout_ = 100;						//Timeout for sending commands
+		uint32_t radar_uart_command_timeout_ = 600;						//Timeout for sending commands
 		uint8_t latest_ack_ = 0;
 		bool latest_command_success_ = false;
 		uint8_t radar_data_frame_[LD2410_MAX_FRAME_LENGTH];				//Store the incoming data from the radar, to check it's in a valid format
