@@ -50,6 +50,8 @@ class ld2410	{
 		bool requestFactoryReset();
 		bool requestStartEngineeringMode();
 		bool requestEndEngineeringMode();
+		bool disableBluetooth();
+		bool enableBluetooth();
 		bool setMaxValues(uint16_t moving, uint16_t stationary, uint16_t inactivityTimer);	//Realistically gate values are 0-8 but sent as uint16_t
 		bool setGateSensitivityThreshold(uint8_t gate, uint8_t moving, uint8_t stationary);
 	protected:
@@ -81,5 +83,6 @@ class ld2410	{
 		void send_command_postamble_();									//Commands have the same postamble
 		bool enter_configuration_mode_();								//Necessary before sending any command
 		bool leave_configuration_mode_();								//Will not read values without leaving command mode
+		bool switch_bluetooth_on_off_(bool value);                      //Turns bluetooth on or off
 };
 #endif
